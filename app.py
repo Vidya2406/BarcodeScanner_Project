@@ -200,5 +200,6 @@ def manage_scans():
 # Main execution block
 # ----------------------------------------------------
 if __name__ == '__main__':
-    # Start local Python development web server. Runs in Debug Mode.
-    app.run(debug=True, port=5000)
+    # Start the Flask development server for local use.
+    # Use environment port when deployed, and disable debug/reloader for compatibility.
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=False)
