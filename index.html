@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Basic page configuration: defines character encoding and responsive viewport -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A simple and clean QR Code and Barcode Scanner web application. Perfect for a college mini-project.">
+    <title>ScanVibe - QR & Barcode Scanner</title>
+    
+    <!-- Google Fonts: Import 'Inter' for a clean, modern sans-serif typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 CSS: Framework for responsive grid layout, card structures, and modern default styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons CSS: Vector icons used for buttons, tabs, and alerts -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    
+    <!-- Custom Style Sheet: Contains our custom blue theme overrides and scanner layouts -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+    <!-- Main Content Wrapper: centered vertically and horizontally -->
+    <div class="container my-auto py-5">
+        <!-- Header Section: Shows the app title and a small project subtitle -->
+        <header class="text-center mb-4">
+            <i class="bi bi-qr-code-scan display-4 text-primary mb-2"></i>
+            <h1 class="display-6 fw-bold text-dark-blue mb-2">ScanVibe</h1>
+            <p class="text-secondary col-md-8 mx-auto">
+                A simple, beginner-friendly web application to scan QR codes and barcodes. Use your live camera stream or upload an image file from your device.
+            </p>
+        </header>
+
+        <!-- Main Workspace Area -->
+        <main class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                
+                <!-- Main Scanner Card -->
+                <div class="card shadow-sm border-0 mb-4 scanner-card">
+                    
+                    <!-- Card Header: Contains Nav Tabs to toggle between Camera and File scanning modes -->
+                    <div class="card-header bg-transparent border-0 p-3 pb-0">
+                        <ul class="nav nav-pills nav-fill" id="scannerTab" role="tablist">
+                            <!-- Tab: Live Camera Scanner -->
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active rounded-pill" id="camera-tab" data-bs-toggle="tab" data-bs-target="#camera-pane" type="button" role="tab" aria-controls="camera-pane" aria-selected="true">
+                                    <i class="bi bi-camera-fill me-2"></i>Camera Scan
+                                </button>
+                            </li>
+                            <!-- Tab: File Upload Decoder -->
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link rounded-pill" id="file-tab" data-bs-toggle="tab" data-bs-target="#file-pane" type="button" role="tab" aria-controls="file-pane" aria-selected="false">
+                                    <i class="bi bi-file-earmark-arrow-up-fill me-2"></i>Upload File
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Card Body: Contains the content panes for the tabs -->
+                    <div class="card-body p-4">
+                        <div class="tab-content" id="scannerTabContent">
+                            
+                            <!-- Pane 1: Live Camera Scan Interface -->
+                            <div class="tab-pane fade show active text-center" id="camera-pane" role="tabpanel" aria-labelledby="camera-tab" tabindex="0">
+                                <!-- Camera Feed Container (Initially hidden, revealed when camera starts) -->
+                                <div id="reader-container" class="mx-auto mb-4 border rounded overflow-hidden shadow-sm d-none">
+                                    <div id="reader"></div>
+                                </div>
+                                
+                                <!-- Camera Selector Dropdown (Shown only if the user has multiple cameras, e.g., on mobile) -->
+                                <div class="mb-3 d-none" id="camera-select-container">
+                                    <label for="camera-select" class="form-label text-secondary small">Switch Active Camera</label>
+                                    <select id="camera-select" class="form-select form-select-sm border rounded-pill px-3"></select>
+                                </div>
+
+                                <!-- Action Trigger: Start/Stop Camera stream -->
+                                <div class="d-grid">
+                                    <button class="btn btn-primary btn-lg rounded-pill" id="btn-toggle-scanner">
+                                        <i class="bi bi-play-fill me-2"></i>Start Scanner
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Pane 2: Image File Decryption Interface -->
+                            <div class="tab-pane fade text-center" id="file-pane" role="tabpanel" aria-labelledby="file-tab" tabindex="0">
+                                <!-- Dashed Dropzone Box for images -->
+                                <div class="file-upload-wrapper p-5 border border-dashed rounded text-center mb-4 bg-light">
+                                    <i class="bi bi-cloud-arrow-up display-5 text-primary mb-3"></i>
+                                    <p class="mb-2 text-dark fw-medium">Drag and drop your QR/Barcode image here</p>
+                                    <p class="text-secondary small">or click to browse from device</p>
+                                    <!-- Transparent file input positioned absolutely to capture drag-and-drop actions -->
+                                    <input type="file" id="file-input" accept="image/*" class="file-input-overlay">
+                                </div>
+                                <!-- Error Alert Box: Displays validation and decoding errors -->
+                                <div id="file-feedback" class="alert alert-danger d-none py-2 small" role="alert"></div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Result Container: Displays scanned results (Initially hidden, displayed on successful scan) -->
+                <div id="result-container" class="card shadow-sm border-0 mb-4 result-card d-none">
+                    <div class="card-body p-4">
+                        <!-- Result Header: Label and Badge displaying barcode type and database save status -->
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h2 class="h5 mb-0 fw-bold text-dark-blue">Scanned Result</h2>
+                            <div>
+                                <span id="save-status" class="badge bg-success rounded-pill me-2 d-none">Saved Successfully</span>
+                                <span id="result-type" class="badge bg-blue-badge rounded-pill text-uppercase">QR CODE</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Value Display: monospace box containing decoded text -->
+                        <div class="bg-light text-dark p-3 border rounded mb-2 font-monospace break-all" id="result-text-box">
+                            <span id="result-text">Scanning...</span>
+                        </div>
+
+                        <!-- Date/Time Display -->
+                        <div class="small text-secondary mb-3" id="result-time-container">
+                            <i class="bi bi-clock me-1"></i>Scanned on: <span id="result-time" class="fw-medium text-dark"></span>
+                        </div>
+
+                        <!-- Actions: Copy value and open link button (if URL is detected) -->
+                        <div class="d-flex gap-2 justify-content-end">
+                            <button id="btn-copy" class="btn btn-outline-secondary btn-sm rounded-pill px-3" title="Copy text to clipboard">
+                                <i class="bi bi-clipboard me-1"></i>Copy
+                            </button>
+                            <a id="btn-open-link" href="#" target="_blank" class="btn btn-primary btn-sm rounded-pill px-3 d-none">
+                                <i class="bi bi-box-arrow-up-right me-1"></i>Open Link
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation link to history page -->
+                <div class="text-center">
+                    <a class="btn btn-link text-decoration-none text-primary fw-medium" id="btn-view-history" href="/history">
+                        <i class="bi bi-clock-history me-2"></i>View Scan History
+                    </a>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Alert Toast Notification: slides up on success or failure alerts -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="statusToast" class="toast align-items-center text-white border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="toast-message"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer: Displays the project title and copyright, required for college mini-projects -->
+    <footer class="bg-white border-top py-3 mt-auto text-center">
+        <div class="container">
+            <p class="text-secondary small mb-0">
+                <span class="fw-semibold text-primary">ScanVibe</span> - QR & Barcode Scanner App &copy; 2026. Built with Python Flask, SQLite, and Bootstrap 5.
+            </p>
+        </div>
+    </footer>
+
+    <!-- html5-qrcode library: Client-side JS decoder imported from CDN -->
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+    <!-- Bootstrap 5 Bundle JS: Handles responsive tab switches and toast trigger logic -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom Script File: Manages camera access, API fetch requests, and page interactions -->
+    <script src="/static/script.js"></script>
+</body>
+</html>
