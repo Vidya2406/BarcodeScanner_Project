@@ -1,0 +1,173 @@
+/* ----------------------------------------------------
+   ScanVibe Custom Styling Sheet
+   College Mini-Project - Simple Blue Color Theme Layout
+   ---------------------------------------------------- */
+
+/* Define CSS Variables for the Blue Theme Palette */
+:root {
+    /* Main Background: Soft, light gray-blue shade */
+    --bg-color: #f4f7f9;
+    
+    /* Card Background: Clean white */
+    --card-bg: #ffffff;
+    
+    /* Primary Accent Color: Deep Royal Blue */
+    --primary-blue: #0253cc;
+    --primary-blue-hover: #013fa0;
+    
+    /* Secondary Accent Color: Light Sky Blue */
+    --light-blue: #e8f1fc;
+    --dark-blue-text: #0b2240;
+    
+    /* Layout Borders: Subtly visible gray-blue */
+    --border-color: #dee6ed;
+    --text-muted: #64748b;
+}
+
+/* Global Reset & Body Background Setup */
+body {
+    background-color: var(--bg-color);
+    color: var(--dark-blue-text);
+    font-family: 'Inter', sans-serif;
+    letter-spacing: -0.01em;
+}
+
+/* Page Header: Dark Blue Accent Titles */
+.text-dark-blue {
+    color: var(--dark-blue-text);
+}
+
+/* Bootstrap Cards Styling: Soft borders and shadows */
+.scanner-card, .result-card {
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Navigation Tabs & Pills (Toggle between Camera and File Scan) */
+.nav-pills .nav-link {
+    color: var(--text-muted);
+    border-radius: 20px;
+    padding: 10px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.nav-pills .nav-link:hover {
+    color: var(--dark-blue-text);
+    background-color: var(--bg-color);
+}
+
+/* Active tab styled with our solid primary blue theme */
+.nav-pills .nav-link.active {
+    background-color: var(--primary-blue) !important;
+    color: #fff !important;
+    box-shadow: 0 4px 10px rgba(2, 83, 204, 0.2);
+}
+
+/* Primary Button Design (Rounded Pills) */
+.btn-primary {
+    background-color: var(--primary-blue) !important;
+    border-color: var(--primary-blue) !important;
+    font-weight: 500;
+    transition: transform 0.2s ease, background-color 0.2s ease !important;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-blue-hover) !important;
+    border-color: var(--primary-blue-hover) !important;
+    transform: translateY(-1px);
+}
+
+.btn-primary:active {
+    transform: translateY(1px);
+}
+
+/* Outlined buttons style matching the theme */
+.btn-outline-primary {
+    color: var(--primary-blue) !important;
+    border-color: var(--primary-blue) !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-blue) !important;
+    color: #fff !important;
+}
+
+/* File Drag & Drop Wrapper Box */
+.file-upload-wrapper {
+    position: relative;
+    border: 2px dashed var(--border-color) !important;
+    border-radius: 12px;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+    cursor: pointer;
+}
+
+.file-upload-wrapper:hover {
+    border-color: var(--primary-blue) !important;
+    background-color: var(--light-blue) !important;
+}
+
+/* Hidden File input overlay: sits on top of the dropzone box to capture clicks */
+.file-input-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* html5-qrcode video viewport alignments */
+#reader {
+    width: 100% !important;
+    border: none !important;
+    background: #000;
+}
+
+#reader video {
+    width: 100% !important;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+#reader-container {
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+    max-width: 320px;
+    background: #000;
+}
+
+/* Custom rounded blue badge for barcode types */
+.bg-blue-badge {
+    background-color: var(--light-blue);
+    color: var(--primary-blue);
+    border: 1px solid rgba(2, 83, 204, 0.2);
+}
+
+/* Utility to break long strings or links on small screens */
+.break-all {
+    word-break: break-all;
+}
+
+/* Search bar styling overrides */
+.input-group-text {
+    border-radius: 20px 0 0 20px !important;
+}
+
+.form-control {
+    border-radius: 0 20px 20px 0 !important;
+}
+
+/* If q clear button is displayed, adjust center border radius values */
+.input-group > .form-control:not(:last-child) {
+    border-radius: 0 !important;
+}
+
+/* Hover rows color in Bootstrap table */
+.table-hover tbody tr:hover {
+    background-color: var(--light-blue) !important;
+}
